@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="How To Create a JvectorMap : " />
+	<script>
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	  ga('create', 'UA-12306636-4', 'anshumania.github.io');
+	  ga('send', 'pageview');
+
+	</script>
+
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+	<link rel="stylesheet" href="stylesheets/jqvmap.css">
+	
+    <title>How to create a JVectorMap</title>
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+	<script src="javascripts/jqvmap/jquery.vmap.js" type="text/javascript"></script>
+    <script src="javascripts/jqvmap/maps/jquery.vmap.delhi.js" type="text/javascript"></script>
+	<script type="text/javascript">
+	jQuery(document).ready(function() {
+		jQuery('#vmap').vectorMap(
+	{
+		map: 'delhi_en',
+		backgroundColor: '#a5bfdd',
+		borderColor: '#818181',
+		borderOpacity: 0.25,
+		borderWidth: 1,
+		color: '#f4f3f0',
+		enableZoom: true,
+		hoverColor: '#c9dfaf',
+		hoverOpacity: null,
+		normalizeFunction: 'linear',
+		scaleColors: ['#b6d6ff', '#005ace'],
+		selectedColor: '#c9dfaf',
+		selectedRegion: null,
+		showTooltip: true,
+		onRegionClick: function(element, code, region)
+		{
+			var message = 'You clicked "'
+				+ region 
+				+ '" which has the code: '
+				+ code.toUpperCase();
+				 
+			alert(message);
+		}
+		});
+	});
+	</script>
+	
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <h1 id="project_title">Create a javascript map for any city</h1>
+          <h2 id="project_tagline">... using svg, jvectormap and inkscape</h2>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+
+      <section id="main_content" class="inner">
+	  	<p> <a href="http://stackoverflow.com/questions/19465664/inkscape-highlight-different-parts-of-a-svg-and-manipulate-the-svg-map-in-html?noredirect=1#comment28885665_19465664">This stackoverflow post</a> was my original question. This page outlines the effort I went through in creating a usable javascript map of a city. The city I am interested is Delhi, India and I am specifically interested in its constituent assemblies. After a bit of research I found that in order to have usable image which can be manipulated via javascript the format to be targetted should be SVG. The final output is <a href="index.html">here</a>.
+		</p>
+		
+        <h3>
+<a name="delhi-constituency-map" class="anchor" href="#delhi-assembly-contituency-map"><span class="octicon octicon-link"></span></a>1. Get the Official Map</h3>
+
+<p>The official constituent assembly map is in pdf format and is available from http://ceodelhi.gov.in/. The direct link is <a href="http://ceodelhi.gov.in/WriteReadData/ParlementryConstituency/delhi_state.pdf"> this.</a> The below is the png version of the same.
+<!-- <image src="images/delhi_state.png" style="width: 600px; height: 400px;"> -->
+<image src="images/delhi_state.png">
+<h3>
+<a name="convert-pdf-svg" class="anchor" href="#convert-pdf-svg"><span class="octicon octicon-link"></span></a>2. Convert PDF to SVG</h3>
+
+<p> For conversion from PDF to SVG, I used <a href="http://inkscape.org/">Inkscape</a>. On the command prompt :
+	<br><code>inkscape.exe -l delhi.svg delhi.pdf</code><br>
+</p>
+
+<h3>
+<a name="process-svg" class="anchor" href="#process-svg"><span class="octicon octicon-link"></span></a>3. Process SVG</h3>
+<p> A couple steps involved here. 
+	<ol> In <a href="http://inkscape.org/">Inkscape</a>
+		<li>Get the map outline. Open the SVG in inkscape and select the 'Edit paths by node' button. Click on any one of the district lines. This will select the nodes in the picture.</li>
+		<li>Copy and Paste (ctrl+c/ctrl+v) to Save into a new file.</li>
+		<li>In the new file again select the 'Edit paths by by node' button and then Path->Break Apart</li>
+		<li>Now save this as SVG. (it will have created paths out of the text nodes).</li>
+		
+		A video which outlines the process :
+		<image src="images/process-svg-1.gif">
+	</ol>
+	<ol> In <a href="https://code.google.com/p/svg-edit/">SVG-edit</a>
+		<li>Browse to the <a href="http://svg-edit.googlecode.com/svn/branches/2.6/editor/svg-editor.html">latest demo.</a></li>
+		<li>Open the SVG file from the last step.</li>
+		<li>Select the SVG button to edit source.</li>
+		<li>Copy the source and save this as the final SVG file.</li>
+		
+		A video which outlines the process :
+		<image src="images/process-svg-2.gif">
+	</ol>
+</p>
+
+<h3>
+<a name="create-jvectormap" class="anchor" href="#create-jvectormap"><span class="octicon octicon-link"></span></a>4. Create JVector Map</h3>
+<p> We will use the excellent jvectormap library to create our map. The handy tool <a href="http://svgto.jvectormap.com/">svgto.jvectormap</a> will convert the svg from our last step to a jvectormap that we can finally use.
+<ol> 
+	<li>Browse to the <a href="http://svgto.jvectormap.com/">svgto.jvectormap</a> tool.</li>
+	<li>Copy the text of the SVG from the previous file and click convert to map. The default name of the map will be 'map'. You can change it.</li>
+	<li>This will generate the vector map. You can now edit the ids and name of the paths as per your liking.</li>
+	<li>Finally Save. This will give the output as a jvectormap. Save this file as js.</li>
+	<li>Note to finally use it, you may have to change the json field "paths" to "pathes".</li>
+	
+	A video which outlines the process :
+	<image src="images/create-jvectormap.gif">
+</ol>
+</p>
+
+<h3>
+<a name="use-jvectormap" class="anchor" href="#use-jvectormap"><span class="octicon octicon-link"></span></a>5. Use the JVector Map</h3>
+<p> Now that the map is ready you can finally use it in any html page. Include the js file from the last step in a html page. 
+	<li>If you had supplied a name for the map in the last step use that for 'nameOfMap' below. You may need to change the json field "paths" to "pathes".
+	<br>
+	<code>
+	jQuery.fn.vectorMap('addMap', 'nameOfMap',{...,"pathes":{ ...
+	</code>
+	</li>
+	<li>Then load the map
+	<br>
+	<code>
+	jQuery(document).ready(function() {
+		jQuery('#vmap').vectorMap(
+	{
+		map: 'nameOfMap',
+		...
+	}
+	</code>
+	</li>
+	<br>
+	You can refer as example to the html code from <a href="https://github.com/anshumania/jvectormap/blob/gh-pages/index.html">here</a>
+</p>
+<h3>
+<a name="references" class="anchor" href="#references"><span class="octicon octicon-link"></span></a>6. References</h3>
+<p>	
+	Note that the <a href="https://github.com/anshumania/jvectormap/blob/gh-pages/javascripts/jqvmap/maps/jquery.vmap.delhi.js">jvector map for delhi</a> has ids which correspond to the official numbering for assembly constituents. 
+	<li>The pattern for the ids is a number followed by an encoding based on its region in Delhi.</li>
+	<li>The numbers are from the <a href="http://gisserver1.nic.in/ecimaps/DelhiAc.aspx">National Informatics Center website</a>.</li>
+	<li>The regions are as described at <a href="http://ceodelhi.gov.in/">Official Website, Chief Electoral Officer, Delhi</a>.</li> 
+	<br>The encodings are as follows
+	
+	<table border="1">
+		<tr><th>Encoding</th><th>Region</th></tr>
+		<tr><td>c</td><td>Central Delhi</td></tr>
+		<tr><td>e</td><td>East Delhi</td></tr>
+		<tr><td>nd</td><td>New Delhi</td></tr>
+		<tr><td>n</td><td>Nort Delhi</td></tr>
+		<tr><td>ne</td><td>North East Delhi</td></tr>
+		<tr><td>nw</td><td>Nort West Delhi</td></tr>
+		<tr><td>s</td><td>South Delhi</td></tr>
+		<tr><td>sw</td><td>South West Delhi</td></tr>
+	</table>
+</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">delhi-svg-map maintained by <a href="https://github.com/anshumania">anshumania</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+  </body>
+</html>
